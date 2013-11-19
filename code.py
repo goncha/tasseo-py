@@ -29,17 +29,44 @@ urls = (
 app = web.application(urls, globals())
 
 ### dashboard scanner
-dashboards = []
 def scan_dashboards(handler):
-    dashboards = [ f.split('.')[0] for f in os.listdir('dashboards') if f.endswith('.js') ]
+    web.ctx.dashboards = []
+    web.ctx.dashboards = [ f.split('.')[0] for f in os.listdir('dashboards') \
+                           if f.endswith('.js') ]
     return handler()
 app.add_processor(scan_dashboards)
 
+### helper
+def accept_content(content_type):
+    http_accept = web.ctx.env['HTTP_ACCEPT']
+    return http_accept and \
+        content_type in [x.split(';')[0] for x in http_accept.split(',')]
+
+
 ### index page
+import web.webapi
+NoContent = web.webapi._status_code("204 No Content")
+
 class index(object):
     def GET(self):
-        return render.index()
-
+        if len(web.ctx.dashboards) > 0:
+            if accept_content('application/json'):
+                web.header('Content-Type',
+                           'application/json; charset=UTF-8')
+                return json.dumps({'dashboards': web.ctx.dashboards})
+            else:
+                return render.index(dashboard=None,
+                                    dashboards=web.ctx.dashboards,
+                                    error=None)
+        else:
+            if accept_content('application/json'):
+                web.header('Content-Type',
+                           'application/json; charset=UTF-8')
+                raise NoContent()
+            else:
+                return render.index(dashboard=None,
+                                    dashboards=None,
+                                    error='No dashboard files found.')
 ### /health
 class health(object):
     def GET(self):
