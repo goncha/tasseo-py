@@ -14,7 +14,12 @@ if module_dir:
 ### web bootstrap
 web.config.debug = True
 
-render = web.template.render()
+# Use Jinja2 template engine
+from web.contrib.template import render_jinja
+render = render_jinja(
+    'templates',                                        # Template directory
+    encoding = 'utf-8'                                  # File charset
+)
 
 urls = (
     '/', 'index',
@@ -23,24 +28,32 @@ urls = (
 )
 app = web.application(urls, globals())
 
+### dashboard scanner
+dashboards = []
+def scan_dashboards(handler):
+    dashboards = [ f.split('.')[0] for f in os.listdir('dashboards') if f.endswith('.js') ]
+    return handler()
+app.add_processor(scan_dashboards)
 
-### index class
+### index page
 class index(object):
     def GET(self):
-        return render.index(None, None, None)
+        return render.index()
 
+### /health
 class health(object):
     def GET(self):
         web.header('Content-Type',
                    'application/json; charset=UTF-8')
         return json.dumps({'status': 'ok'})
 
+### /dashboard-name
 class dashboard(object):
     def GET(self, dashboard):
         pass
 
 
-### Entries of app
+### Entry of app
 from web.httpserver import StaticMiddleware
 
 class DashboardsStaticMiddleware(StaticMiddleware):
