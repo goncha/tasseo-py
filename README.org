@@ -8,6 +8,8 @@ Python implementation of tasseo.
 
 Third-party software libraries included with this project are distributed under their respective licenses.
 
+ - web.py -  [[https://github.com/webpy/webpy/blob/master/LICENSE.txt][public domain]]
+ - jinja2 - [[https://github.com/mitsuhiko/jinja2/blob/master/LICENSE][BSD]]
  - jquery.js - [[https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt][MIT]]
  - jquery.flot.js - [[https://github.com/flot/flot/blob/master/LICENSE.txt][IOLA and Ole Laursen]]
  - excanvas.js - [[http://code.google.com/p/explorercanvas/source/browse/trunk/COPYING][Apache License Version 2.0]]
