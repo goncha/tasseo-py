@@ -15,7 +15,7 @@
   <body>
     <div class="title">
       {% if dashboard %}
-      <span>{{ dashboard|e }}</span>
+      <span>{{ dashboard }}</span>
       <div class="toolbar">
         <ul class="timepanel">
           <li class="timepanel live selected">
@@ -46,7 +46,7 @@
       {% else %}
       <span>Tasseo</span>
         {% if error %}
-        <p>{{ error|e }}</p>
+        <p>{{ error }}</p>
         {% endif %}
       {% endif %}
     </div>
@@ -57,7 +57,7 @@
 	var url="{{ environ['GRAPHITE_URL'] }}";
 	var auth="{{ environ['GRAPHITE_AUTH'] }}";
       </script>
-      <script type="text/javascript" src="dashboards/{{ dashboard|e }}.js"></script>
+      <script type="text/javascript" src="dashboards/{{ dashboard }}.js"></script>
       <script type="text/javascript" src="static/j/tasseo.js"></script>
     </div>
     {% else %}
@@ -65,7 +65,7 @@
     <div class="nav">
       <ul>
 	{% for d in dashboards %}
-	<li><a href="{{ d|urlencode }}">{{ d|e }}</a></li>
+	<li><a href="{{ d|urlencode }}">{{ d }}</a></li>
 	{% endfor %}
       </ul>
     </div>

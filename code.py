@@ -14,12 +14,36 @@ if module_dir:
 ### web bootstrap
 web.config.debug = True
 
-# Use Jinja2 template engine
-from web.contrib.template import render_jinja
+
+### Use Jinja2 template engine
+def guess_autoescape(template_name):
+    if template_name is None or '.' not in template_name:
+        return False
+    ext = template_name.rsplit('.', 1)[1]
+    return ext in ('html', 'htm', 'xml')
+
+class render_jinja:
+    def __init__(self, *a, **kwargs):
+        extensions = kwargs.pop('extensions', [])
+        globals = kwargs.pop('globals', {})
+
+        from jinja2 import Environment,FileSystemLoader
+        self._lookup = Environment(loader=FileSystemLoader(*a, **kwargs),
+                                   extensions=extensions,
+                                   autoescape=guess_autoescape)
+        self._lookup.globals.update(globals)
+
+    def __getattr__(self, name):
+        # Assuming all templates end with .html
+        path = name + '.html'
+        t = self._lookup.get_template(path)
+        return t.render
+
 render = render_jinja(
     'templates',                                        # Template directory
     encoding = 'utf-8',                                 # File charset
-    globals = { 'environ' : os.environ }                # Global variables
+    globals = { 'environ' : os.environ },               # Global variables
+    extensions = ['jinja2.ext.autoescape']              # Jinja2 extensions
 )
 
 urls = (
