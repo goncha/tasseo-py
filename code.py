@@ -18,7 +18,8 @@ web.config.debug = True
 from web.contrib.template import render_jinja
 render = render_jinja(
     'templates',                                        # Template directory
-    encoding = 'utf-8'                                  # File charset
+    encoding = 'utf-8',                                 # File charset
+    globals = { 'environ' : os.environ }                # Global variables
 )
 
 urls = (
@@ -77,7 +78,15 @@ class health(object):
 ### /dashboard-name
 class dashboard(object):
     def GET(self, dashboard):
-        pass
+        if dashboard in web.ctx.dashboards:
+            return render.index(dashboard=dashboard,
+                                dashboards=None,
+                                error=None)
+        else:
+            web.ctx.status = '404 Not Found'
+            return render.index(dashboard=None,
+                                dashboards=None,
+                                error='That dashboard does not exist.')
 
 
 ### Entry of app

@@ -220,9 +220,9 @@ for (var i=0; i<graphs.length; i++) {
   if (realMetrics[i].target === false) {
     //continue;
   } else if (myTheme === 'dark') {
-    $('.overlay-number' + i + ' span').html('<img src="./i/spin-night.gif" />');
+    $('.overlay-number' + i + ' span').html('<img src="./static/i/spin-night.gif" />');
   } else {
-    $('.overlay-number' + i).html('<img src="./i/spin.gif" />');
+    $('.overlay-number' + i).html('<img src="./static/i/spin.gif" />');
   }
 }
 refreshData();
