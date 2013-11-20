@@ -1,8 +1,19 @@
 * tasseo-py
 
 ** Intro
+   
+Python implementation of [[https://github.com/obfuscurity/tasseo][tasseo]].
 
-Python implementation of tasseo.
+** Deployment
+
+#+BEGIN_SRC shell
+  $ pip install -r requirements.txt
+  $ GRAPHITE_URL=http://... python code.py
+#+END_SRC
+
+** Configuration
+
+Please ref [[https://github.com/obfuscurity/tasseo][tasseo]].
 
 ** License
 
