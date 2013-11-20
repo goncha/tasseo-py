@@ -240,13 +240,14 @@ function renderNavigationList() {
     $('.title').off('hover', 'span');
     $('.title span').html('<select><option value="">welcome</option></select>');
     var selectObj = $('.title select');
-    var currentDb = window.location.pathname.split('/').pop();
+    var currentDb = decodeURIComponent(window.location.pathname.split('/').pop());
     for (var i in list) {
+      var optObj = $('<option/>');
+      optObj.text(list[i]);
       if (list[i] === currentDb) {
-        selectObj.append('<option selected="selected">' + list[i] + '</option>');
-      } else {
-        selectObj.append('<option>' + list[i] + '</option>');
+        optObj.attr('selected', 'selected');
       }
+      selectObj.append(optObj);
     }
     selectObj.focus();
   });
@@ -268,7 +269,7 @@ $(document).on('mouseleave', 'div.graph', function() {
 
 // clear navigation list on focusout
 $('.title span').on('focusout', 'select', function() {
-  $('.title span').html(window.location.pathname.split('/').pop());
+  $('.title span').text(decodeURIComponent(window.location.pathname.split('/').pop()));
   $('.title').on('hover', 'span', renderNavigationList);
 });
 
@@ -276,7 +277,7 @@ $('.title span').on('focusout', 'select', function() {
 $('.title span').on('change', 'select', function() {
   var pathname = window.location.pathname.split('/');
   pathname.pop();
-  pathname.push($(this).val());
+  pathname.push(encodeURIComponent($(this).val()));
   window.location.pathname = pathname.join('/');
 });
 

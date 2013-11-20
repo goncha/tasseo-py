@@ -16,12 +16,6 @@ web.config.debug = True
 
 
 ### Use Jinja2 template engine
-def guess_autoescape(template_name):
-    if template_name is None or '.' not in template_name:
-        return False
-    ext = template_name.rsplit('.', 1)[1]
-    return ext in ('html', 'htm', 'xml')
-
 class render_jinja:
     def __init__(self, *a, **kwargs):
         extensions = kwargs.pop('extensions', [])
@@ -30,7 +24,7 @@ class render_jinja:
         from jinja2 import Environment,FileSystemLoader
         self._lookup = Environment(loader=FileSystemLoader(*a, **kwargs),
                                    extensions=extensions,
-                                   autoescape=guess_autoescape)
+                                   autoescape=True)
         self._lookup.globals.update(globals)
 
     def __getattr__(self, name):
@@ -102,15 +96,19 @@ class health(object):
 ### /dashboard-name
 class dashboard(object):
     def GET(self, dashboard):
-        if dashboard in web.ctx.dashboards:
-            return render.index(dashboard=dashboard,
+        if not os.environ.has_key('GRAPHITE_URL'):
+            web.ctx.status = '500 Internal Server Error'
+            return render.index(dashboard=None,
                                 dashboards=None,
-                                error=None)
-        else:
+                                error='GRAPHITE_URL has not been set.')
+        if dashboard not in web.ctx.dashboards:
             web.ctx.status = '404 Not Found'
             return render.index(dashboard=None,
                                 dashboards=None,
                                 error='That dashboard does not exist.')
+        return render.index(dashboard=dashboard,
+                            dashboards=None,
+                            error=None)
 
 
 ### Entry of app
