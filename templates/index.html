@@ -14,33 +14,33 @@
   </head>
   <body>
     <div class="title">
-      {% if dashboard %}
+      {% if dashboard %} {# Title div #}
       <span>{{ dashboard }}</span>
       <div class="toolbar">
         <ul class="timepanel">
           <li class="timepanel live selected">
-  	  <a class="play" href="#">live</a>
-  	</li>
+          <a class="play" href="#">live</a>
+        </li>
           <li class="timepanel">
             <a class="range" href="#" title="60">1h</a>
-  	</li>
+        </li>
           <li class="timepanel">
             <a class="range" href="#" title="180">3h</a>
-  	</li>
+        </li>
           <li class="timepanel">
             <a class="range" href="#" title="1440">1d</a>
-  	</li>
+        </li>
           <li class="timepanel">
             <a class="range" href="#" title="10080">1w</a>
-  	</li>
+        </li>
         </ul>
         <ul class="toggle">
           <li class="toggle-nonum">
             <a href="#"><img src="static/i/toggle-number.png"/></a>
-  	</li>
+        </li>
           <li class="toggle-night">
             <a href="#"><img src="static/i/toggle-night.png"/></a>
-  	</li>
+        </li>
         </ul>
       </div>
       {% else %}
@@ -50,12 +50,11 @@
         {% endif %}
       {% endif %}
     </div>
-
-    {% if dashboard %}
+    {% if dashboard %} {# Main div #}
     <div class="main">
       <script type="text/javascript">
-	var url="{{ environ['GRAPHITE_URL'] }}";
-	var auth="{{ environ['GRAPHITE_AUTH'] }}";
+        var url="{{ environ['GRAPHITE_URL'] }}";
+        var auth="{{ environ['GRAPHITE_AUTH'] }}";
       </script>
       <script type="text/javascript" src="dashboards/{{ dashboard }}.js"></script>
       <script type="text/javascript" src="static/j/tasseo.js"></script>
@@ -64,9 +63,9 @@
     {% if dashboards %}
     <div class="nav">
       <ul>
-	{% for d in dashboards %}
-	<li><a href="{{ d|urlencode }}">{{ d }}</a></li>
-	{% endfor %}
+        {% for d in dashboards %}
+        <li><a href="{{ d|urlencode }}">{{ d }}</a></li>
+        {% endfor %}
       </ul>
     </div>
     {% endif %}

@@ -24,7 +24,9 @@ class render_jinja:
         from jinja2 import Environment,FileSystemLoader
         self._lookup = Environment(loader=FileSystemLoader(*a, **kwargs),
                                    extensions=extensions,
-                                   autoescape=True)
+                                   autoescape=True,
+                                   trim_blocks=True,
+                                   lstrip_blocks=True)
         self._lookup.globals.update(globals)
 
     def __getattr__(self, name):
