@@ -109,7 +109,7 @@ class dashboard(object):
                                 dashboards=None,
                                 error='That dashboard does not exist.')
         return render.index(dashboard=dashboard,
-                            dashboards=None,
+                            dashboards=web.ctx.dashboards,
                             error=None)
 
 

@@ -26,18 +26,19 @@
             <span class="icon-bar"></span>
 	  </button>
           <a class="navbar-brand" href="#">Tasseo</a>
-	</div>  <!-- END navbar-header -->
+        </div>  <!-- END navbar-header -->
         <div class="navbar-collapse collapse">
-	  {% if dashboard %}
+          {% if dashboard %}
           <div class="navbar-form navbar-left">
-	    <div class="btn-group">
-	      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		Dashboard 1
-		<span class="caret"></span>
-	      </button>
-	      <ul class="dropdown-menu">
-		<li><a href="#">Dashboard 1</a></li>
-		<li><a href="#">Dashboard 2</a></li>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                {{ dashboard }}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                {% for d in dashboards %}
+                <li><a href="./{{ d|urlencode }}">{{ d }}{% if d == dashboard %}<span>&#x2713;</span>{% endif %}</a></li>
+		{% endfor %}
 	      </ul>
 	    </div>
           </div>
