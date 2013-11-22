@@ -61,23 +61,23 @@
     </div> <!-- END navbar -->
 
     <div class="container">
-      {% if dashboard %}
       {% if error %}
       <p>{{ error }}</p>
       {% else %}
+      {% if dashboard %}
       <script type="text/javascript">
         var url="{{ environ['GRAPHITE_URL'] }}";
         var auth="{{ environ['GRAPHITE_AUTH'] }}";
       </script>
       <script type="text/javascript" src="dashboards/{{ dashboard }}.js"></script>
       <script type="text/javascript" src="static/js/tasseo.js"></script>
-      {% endif %}
       {% else %}
       <ul class="list-unstyled h2">
         {% for d in dashboards %}
         <li><a href="{{ d|urlencode }}">{{ d }}</a></li>
         {% endfor %}
       </ul>
+      {% endif %}
       {% endif %}
     </div> <!-- END container -->
   </body>
