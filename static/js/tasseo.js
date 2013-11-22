@@ -210,16 +210,16 @@ if (myTheme === 'dark') { enableNightMode(); }
 
 // hide our toolbar if necessary
 var toolbar = (typeof toolbar == 'undefined') ? true : toolbar;
-if (!toolbar) { $('div.toolbar').css('display', 'none'); }
+if (!toolbar) { $('#toolbar').css('display', 'none'); }
 
 // initial load screen
 for (var i=0; i<graphs.length; i++) {
   if (realMetrics[i].target === false) {
     //continue;
   } else if (myTheme === 'dark') {
-    $('.overlay-number' + i + ' span').html('<img src="./static/i/spin-night.gif" />');
+    $('.overlay-number' + i + ' span').html('<img src="./static/img/spin-night.gif" />');
   } else {
-    $('.overlay-number' + i).html('<img src="./static/i/spin.gif" />');
+    $('.overlay-number' + i).html('<img src="./static/img/spin.gif" />');
   }
 }
 refreshData();
@@ -229,28 +229,8 @@ var refreshInterval = (typeof refresh == 'undefined') ? 10000 : refresh;
 var refreshId = setInterval(refreshData, refreshInterval);
 
 // set our 'live' interval hint
-$('.toolbar ul li.timepanel a.play').text(period + 'min');
+$('#timepanel .btn-primary').text(period + 'min');
 
-// populate and render our navigation list
-function renderNavigationList() {
-  getDashboards(function(list) {
-    $('.title').off('mouseenter', 'span');
-    $('.title span').html('<select><option value="">welcome</option></select>');
-    var selectObj = $('.title select');
-    var currentDb = decodeURIComponent(window.location.pathname.split('/').pop());
-    for (var i in list) {
-      var optObj = $('<option/>');
-      optObj.text(list[i]);
-      if (list[i] === currentDb) {
-        optObj.attr('selected', 'selected');
-      }
-      selectObj.append(optObj);
-    }
-    selectObj.focus();
-  });
-}
-
-$('.title').on('mouseenter', 'span', renderNavigationList);
 
 // display description
 $(document).on('mouseenter', 'div.graph', function() {
@@ -264,19 +244,6 @@ $(document).on('mouseleave', 'div.graph', function() {
   $(this).find('span.description').css('visibility', 'hidden');
 });
 
-// clear navigation list on focusout
-$('.title span').on('focusout', 'select', function() {
-  $('.title span').text(decodeURIComponent(window.location.pathname.split('/').pop()));
-  $('.title').on('mouseenter', 'span', renderNavigationList);
-});
-
-// navigate to selection
-$('.title span').on('change', 'select', function() {
-  var pathname = window.location.pathname.split('/');
-  pathname.pop();
-  pathname.push(encodeURIComponent($(this).val()));
-  window.location.pathname = pathname.join('/');
-});
 
 // activate night mode
 function enableNightMode() {

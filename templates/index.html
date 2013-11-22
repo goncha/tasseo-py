@@ -34,7 +34,6 @@
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 {{ dashboard }}
                 <span class="caret"></span>
-
               </button>
               <ul class="dropdown-menu">
                 {% for d in dashboards %}
@@ -43,16 +42,16 @@
 	      </ul>
 	    </div>
           </div>
-          <div class="navbar-form navbar-right">
+          <div id="toolbar" class="navbar-form navbar-right">
             <div id="timepanel" class="btn-group">
-              <button class="btn btn-default">live</button>
+              <button class="btn btn-default btn-primary">live</button>
               <button class="btn btn-default" title="60">1h</button>
               <button class="btn btn-default" title="180">3h</button>
               <button class="btn btn-default" title="1440">1d</button>
               <button class="btn btn-default" title="10080">1w</button>
 	    </div>
             <div id="modepanel" class="btn-group">
-              <button type="button" class="btn btn-default">Clear</button>
+              <button type="button" class="btn btn-default">Numbers</button>
               <button type="button" class="btn btn-default">Night</button>
 	    </div>
           </div>
