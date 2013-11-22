@@ -111,16 +111,6 @@ function refreshData() {
 }
 
 
-// retrieve dashboard list
-function getDashboards(cb) {
-  $.getJSON(".", function(d) {
-    cb(d.dashboards);
-  }).fail(function(xhr, textStatus, errorThrown) {
-    console.log(errorThrown);
-  });
-}
-
-
 // retrieve the data from Graphite
 function getData(url, cb) {
   $.getJSON(url, function(targets) {
@@ -173,22 +163,29 @@ function updateGraph(i, data, color) {
 // add our containers
 function buildContainers() {
   var falseTargets = 0;
+  var colNumbers = 3;
+  var rowObj;
+  var containerObj = $("#graphs");
   for (var i=0; i<metrics.length; i++) {
+    if (i % colNumbers === 0) {
+      rowObj = $('<div class="row"></div>');
+      containerObj.append(rowObj);
+    }
     if (metrics[i].target === false) {
-      $('.main').append('<div class="false"></div>');
+      rowObj.append('<div class="col-md-4 false"></div>');
       falseTargets++;
     } else {
       var j = i - falseTargets;
       var link_open = 'link' in metrics[i] ? '<a href="' + metrics[i].link + '" target="_new">' : '';
       var link_close = 'link' in metrics[i] ? '</a>' : '';
       var graph_div =
-        '<div id="' + j + '" class="graph">' +
+        '<div id="' + j + '" class="col-md-4 graph">' +
         '<div class="plot plot' + j + '"></div>' +
         '<span class="description description' + j + '"></span>' +
         link_open + '<div class="overlay-name overlay-name' + j + '"></div>' + link_close +
         '<div class="overlay-number overlay-number' + j + '"></div>' +
         '</div>';
-      $('.main').append(graph_div);
+      rowObj.append(graph_div);
     }
   }
 }

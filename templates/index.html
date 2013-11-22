@@ -34,23 +34,24 @@
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 {{ dashboard }}
                 <span class="caret"></span>
+
               </button>
               <ul class="dropdown-menu">
                 {% for d in dashboards %}
-                <li><a href="./{{ d|urlencode }}">{{ d }}{% if d == dashboard %}<span>&#x2713;</span>{% endif %}</a></li>
+                <li><a href="./{{ d|urlencode }}">{{ d }}</a></li>
 		{% endfor %}
 	      </ul>
 	    </div>
           </div>
           <div class="navbar-form navbar-right">
-            <div class="btn-group">
+            <div id="timepanel" class="btn-group">
               <button class="btn btn-default">live</button>
               <button class="btn btn-default" title="60">1h</button>
               <button class="btn btn-default" title="180">3h</button>
               <button class="btn btn-default" title="1440">1d</button>
               <button class="btn btn-default" title="10080">1w</button>
 	    </div>
-            <div class="btn-group">
+            <div id="modepanel" class="btn-group">
               <button type="button" class="btn btn-default">Clear</button>
               <button type="button" class="btn btn-default">Night</button>
 	    </div>
@@ -65,6 +66,7 @@
       <p>{{ error }}</p>
       {% else %}
       {% if dashboard %}
+      <div id="graphs" class="container"></div>
       <script type="text/javascript">
         var url="{{ environ['GRAPHITE_URL'] }}";
         var auth="{{ environ['GRAPHITE_AUTH'] }}";
