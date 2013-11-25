@@ -3,12 +3,10 @@ body {
 }
 
 .graph, .false {
-//  position: relative;
-//  float: left;
-  padding-bottom: 10px;
-//  margin: 10px;
+  position: relative;
   width: 340px;
   height: 100px;
+  padding-bottom: 10px;
 }
 
 .plot {
@@ -38,7 +36,8 @@ span.description {
   z-index: 300;
   min-width: 300px;
   min-height: 50px;
-  margin: -50px 0 0 -20px;
+  right: -10px;
+  bottom: -70px;
   background-color: rgba(255, 255, 255, 0.85);
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
