@@ -17,10 +17,10 @@ var graphiteUrl;      // graphite render url
 
 
 // Defined in DASHBOARD.js
+var myPeriod = (typeof period == 'undefined') ? 5 : period;
 // minutes of data in the live feed
-var period = (typeof period == 'undefined') ? 5 : period;
 // wrap keepLastValue around target to pad null values
-var padnulls = (typeof padnulls == 'undefined') ? true : padnulls;
+var myPadnulls = (typeof padnulls == 'undefined') ? true : padnulls;
 
 
 // gather our non-false targets
@@ -72,7 +72,7 @@ function constructGraphs() {
 // construct url
 function constructUrl(period) {
   graphiteUrl = url + '/render?' + $.map(realMetrics, function(metric) {
-    if (padnulls === true) {
+    if (myPadnulls === true) {
       return ('target=keepLastValue(' + encodeURI(metric.target) + ')');
     } else {
       return ('target=' + encodeURI(metric.target));
@@ -219,7 +219,7 @@ buildContainers();
 constructGraphs();
 
 // build our url
-constructUrl(period);
+constructUrl(myPeriod);
 
 // display description
 $(document).on('mouseenter', 'div.graph', function() {
@@ -254,8 +254,8 @@ $('#modepanel').on('click', 'button.mode-num', function() {
 
 // time panel, pause live feed and show range
 $('#timepanel').on('click', 'button.range', function() {
-  var period = $(this).attr('title');
-  constructUrl(period);
+  var rangePeriod = $(this).attr('title');
+  constructUrl(rangePeriod);
   if (! $('#timepanel button.play').hasClass('pause')) {
     $('#timepanel button.play').addClass('pause');
   }
@@ -269,11 +269,11 @@ $('#timepanel').on('click', 'button.range', function() {
 
 // time panel, resume live feed
 $('#timepanel').on('click', 'button.play', function() {
-  constructUrl(period);
+  constructUrl(myPeriod);
   $(this).parent('div').find('button').removeClass('btn-primary');
   $(this).addClass('btn-primary');
   $(this).removeClass('pause');
-  $('#toolbar button.play').text(period + 'min');
+  $('#toolbar button.play').text(myPeriod + 'min');
   refreshEnabled = true;
   refreshData(true);
   // explicitly clear the old Interval in case
@@ -308,5 +308,5 @@ var refreshInterval = (typeof refresh == 'undefined') ? 10000 : refresh;
 var refreshId = setInterval(refreshData, refreshInterval);
 
 // set our 'live' interval hint
-$('#timepanel .play').text(period + 'min');
+$('#timepanel .play').text(myPeriod + 'min');
 }); // END $()
