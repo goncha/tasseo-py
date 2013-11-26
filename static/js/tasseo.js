@@ -236,7 +236,10 @@ var refreshInterval = (typeof refresh == 'undefined') ? 10000 : refresh;
 var refreshId = setInterval(refreshData, refreshInterval);
 
 // set our 'live' interval hint
-$('#timepanel .btn-primary').text(period + 'min');
+$('#timepanel .play').text(period + 'min');
+
+// set number mode
+$('#modepanel .mode-num').addClass('btn-primary');
 
 // display description
 $(document).on('mouseenter', 'div.graph', function() {
@@ -281,8 +284,11 @@ $('li.toggle-night').on('click', 'a', function() {
   }
 });
 
-// toggle number display
-$('li.toggle-nonum').on('click', 'a', function() { $('div.overlay-number').toggleClass('nonum'); });
+// toggle number mode display
+$('#modepanel').on('click', 'button.mode-num', function() {
+  $(this).toggleClass('btn-primary');
+  $('div.overlay-number').toggleClass('nonum');
+});
 
 // time panel, pause live feed and show range
 $('#timepanel').on('click', 'button.range', function() {
