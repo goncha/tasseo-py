@@ -81,10 +81,13 @@ function constructUrl(period) {
 }
 
 
+var refreshEnabled;   // auto refresh status
+
 // refresh the graph
-function refreshData() {
+function refreshData(force) {
   // graphiteUrl is global
   getData(graphiteUrl, function(i, target) {
+    if (!refreshEnabled && (typeof force == 'undefined' || force === false)) return;
     // normalize datapoints
     var xzero = target.datapoints[0][1];
     var d = $.map(target.datapoints, function(d) {
@@ -190,6 +193,18 @@ function buildContainers() {
   }
 }
 
+// contruct loading spin
+function constructLoadingSpin() {
+  for (var i=0; i<graphs.length; i++) {
+    if (realMetrics[i].target === false) {
+      //continue;
+    } else if (myTheme === 'dark') {
+      $('.overlay-number' + i + ' span').html('<img src="./static/img/spin-night.gif" />');
+    } else {
+      $('.overlay-number' + i).html('<img src="./static/img/spin.gif" />');
+    }
+  }
+}
 
 // filter out false targets
 gatherRealMetrics();
@@ -203,7 +218,6 @@ constructGraphs();
 // build our url
 constructUrl(period);
 
-
 // set our theme
 var myTheme = (typeof theme == 'undefined') ? 'default' : theme;
 if (myTheme === 'dark') { enableNightMode(); }
@@ -213,15 +227,8 @@ var toolbar = (typeof toolbar == 'undefined') ? true : toolbar;
 if (!toolbar) { $('#toolbar').css('display', 'none'); }
 
 // initial load screen
-for (var i=0; i<graphs.length; i++) {
-  if (realMetrics[i].target === false) {
-    //continue;
-  } else if (myTheme === 'dark') {
-    $('.overlay-number' + i + ' span').html('<img src="./static/img/spin-night.gif" />');
-  } else {
-    $('.overlay-number' + i).html('<img src="./static/img/spin.gif" />');
-  }
-}
+refreshEnabled = true;
+constructLoadingSpin();
 refreshData();
 
 // define our refresh and start interval
@@ -230,7 +237,6 @@ var refreshId = setInterval(refreshData, refreshInterval);
 
 // set our 'live' interval hint
 $('#timepanel .btn-primary').text(period + 'min');
-
 
 // display description
 $(document).on('mouseenter', 'div.graph', function() {
@@ -243,7 +249,6 @@ $(document).on('mouseenter', 'div.graph', function() {
 $(document).on('mouseleave', 'div.graph', function() {
   $(this).find('span.description').css('visibility', 'hidden');
 });
-
 
 // activate night mode
 function enableNightMode() {
@@ -280,26 +285,30 @@ $('li.toggle-night').on('click', 'a', function() {
 $('li.toggle-nonum').on('click', 'a', function() { $('div.overlay-number').toggleClass('nonum'); });
 
 // time panel, pause live feed and show range
-$('.toolbar ul li.timepanel').on('click', 'a.range', function() {
+$('#timepanel').on('click', 'button.range', function() {
   var period = $(this).attr('title');
   constructUrl(period);
-  if (! $('.toolbar ul li.timepanel a.play').hasClass('pause')) {
-    $('.toolbar ul li.timepanel a.play').addClass('pause');
+  if (! $('#timepanel button.play').hasClass('pause')) {
+    $('#timepanel button.play').addClass('pause');
   }
-  $('.toolbar ul li.timepanel a.play').text('paused');
-  $(this).parent('li').parent('ul').find('li').removeClass('selected');
-  $(this).parent('li').addClass('selected');
-  refreshData();
+  $('#timepanel button.play').text('paused');
+  $(this).parent('div').find('button').removeClass('btn-primary');
+  $(this).addClass('btn-primary');
   clearInterval(refreshId);
+  refreshEnabled = false;
+  constructLoadingSpin();
+  refreshData(true);
 });
 
 // time panel, resume live feed
-$('.toolbar ul li.timepanel').on('click', 'a.play', function() {
-  constructUrl(5);
-  $(this).parent('li').parent('ul').find('li').removeClass('selected');
-  $(this).parent('li').addClass('selected');
+$('#timepanel').on('click', 'button.play', function() {
+  constructUrl(period);
+  $(this).parent('div').find('button').removeClass('btn-primary');
+  $(this).addClass('btn-primary');
   $(this).removeClass('pause');
-  $('.toolbar ul li.timepanel a.play').text(period + 'min');
+  $('#toolbar button.play').text(period + 'min');
+  refreshEnabled = true;
+  constructLoadingSpin();
   refreshData();
   // explicitly clear the old Interval in case
   // someone 'doubles up' on the live play button
