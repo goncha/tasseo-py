@@ -275,7 +275,7 @@ $('#timepanel').on('click', 'button.play', function() {
   $(this).parent('div').find('button').removeClass('btn-primary');
   $(this).addClass('btn-primary');
   $(this).removeClass('pause');
-  $('#toolbar button.play').text(myPeriod + 'min');
+  $('#timepanel button.play').text(myPeriod + 'min');
   refreshEnabled = true;
   refreshData(true);
   // explicitly clear the old Interval in case
