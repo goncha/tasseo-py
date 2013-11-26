@@ -85,9 +85,13 @@ var refreshEnabled;   // auto refresh status
 
 // refresh the graph
 function refreshData(force) {
+  force = (typeof force != 'undefined' && force === true);
+  if (force) { $('.graph .overlay-spin').css('display', 'block'); }
+
   // graphiteUrl is global
   getData(graphiteUrl, function(i, target) {
-    if (!refreshEnabled && (typeof force == 'undefined' || force === false)) return;
+    if (force) { $('.graph .overlay-spin').css('display', 'none'); }
+    if (!refreshEnabled && !force) return;
     // normalize datapoints
     var xzero = target.datapoints[0][1];
     var d = $.map(target.datapoints, function(d) {
@@ -187,6 +191,7 @@ function buildContainers() {
         '<span class="description description' + j + '"></span>' +
         link_open + '<div class="overlay-name overlay-name' + j + '"></div>' + link_close +
         '<div class="overlay-number overlay-number' + j + '"></div>' +
+        '<div class="overlay-spin"></div>' +
         '</div>';
       rowObj.append(graph_div);
     }
@@ -195,15 +200,13 @@ function buildContainers() {
 
 // contruct loading spin
 function constructLoadingSpin() {
-  for (var i=0; i<graphs.length; i++) {
-    if (realMetrics[i].target === false) {
-      //continue;
-    } else if (myTheme === 'dark') {
-      $('.overlay-number' + i + ' span').html('<img src="./static/img/spin-night.gif" />');
-    } else {
-      $('.overlay-number' + i).html('<img src="./static/img/spin.gif" />');
-    }
+  var spinFile;
+  if ($('#modepanel .mode-night').hasClass('btn-primary')) { // night mode on
+    spinFile = 'spin-night.gif';   
+  } else { // night mode off
+    spinFile = 'spin.gif';
   }
+  $('.graph .overlay-spin').html('<img src="./static/img/' + spinFile + '" />');
 }
 
 // filter out false targets
@@ -218,29 +221,6 @@ constructGraphs();
 // build our url
 constructUrl(period);
 
-// set our theme
-var myTheme = (typeof theme == 'undefined') ? 'default' : theme;
-if (myTheme === 'dark') { enableNightMode(); }
-
-// hide our toolbar if necessary
-var toolbar = (typeof toolbar == 'undefined') ? true : toolbar;
-if (!toolbar) { $('#toolbar').css('display', 'none'); }
-
-// initial load screen
-refreshEnabled = true;
-constructLoadingSpin();
-refreshData();
-
-// define our refresh and start interval
-var refreshInterval = (typeof refresh == 'undefined') ? 10000 : refresh;
-var refreshId = setInterval(refreshData, refreshInterval);
-
-// set our 'live' interval hint
-$('#timepanel .play').text(period + 'min');
-
-// set number mode
-$('#modepanel .mode-num').addClass('btn-primary');
-
 // display description
 $(document).on('mouseenter', 'div.graph', function() {
   if ($(this).find('span.description').text().length > 0) {
@@ -253,35 +233,17 @@ $(document).on('mouseleave', 'div.graph', function() {
   $(this).find('span.description').css('visibility', 'hidden');
 });
 
-// activate night mode
-function enableNightMode() {
-  $('body').addClass('night');
-  $('div.title h1').addClass('night');
-  $('div.graph div.plot').css('opacity', '0.8');
-  $('span.description').addClass('night');
-  $('div.overlay-name').addClass('night');
-  $('div.overlay-number').addClass('night');
-  $('div.toolbar ul li.timepanel').addClass('night');
-}
-
-// deactivate night mode
-function disableNightMode() {
-  $('body').removeClass('night');
-  $('div.title h1').removeClass('night');
-  $('div.graph div.plot').css('opacity', '1.0');
-  $('span.description').removeClass('night');
-  $('div.overlay-name').removeClass('night');
-  $('div.overlay-number').removeClass('night');
-  $('div.toolbar ul li.timepanel').removeClass('night');
-}
-
 // activate night mode by click
-$('li.toggle-night').on('click', 'a', function() {
-  if ($('body').hasClass('night')) {
-    disableNightMode();
-  } else {
-    enableNightMode();
-  }
+$('#modepanel').on('click', 'button.mode-night', function() {
+  var thisObj = $(this);
+  thisObj.toggleClass('btn-primary');
+  $('body').toggleClass('night');
+  $('.navbar').toggleClass('navbar-inverse');
+  $('div.graph div.plot').css('opacity', thisObj.hasClass('btn-primary') ? '0.8' : '1.0');
+  $('span.description').toggleClass('night');
+  $('div.overlay-name').toggleClass('night');
+  $('div.overlay-number').toggleClass('night');
+  constructLoadingSpin();
 });
 
 // toggle number mode display
@@ -302,7 +264,6 @@ $('#timepanel').on('click', 'button.range', function() {
   $(this).addClass('btn-primary');
   clearInterval(refreshId);
   refreshEnabled = false;
-  constructLoadingSpin();
   refreshData(true);
 });
 
@@ -314,8 +275,7 @@ $('#timepanel').on('click', 'button.play', function() {
   $(this).removeClass('pause');
   $('#toolbar button.play').text(period + 'min');
   refreshEnabled = true;
-  constructLoadingSpin();
-  refreshData();
+  refreshData(true);
   // explicitly clear the old Interval in case
   // someone 'doubles up' on the live play button
   clearInterval(refreshId);
@@ -325,4 +285,28 @@ $('#timepanel').on('click', 'button.play', function() {
   refreshId = setInterval(refreshData, refreshInterval);
 });
 
+// set night mode
+var myTheme = (typeof theme == 'undefined') ? 'default' : theme;
+if (myTheme === 'dark') { $('#modepanel button.mode-night').click(); }
+
+// set loading spin based on night mode
+constructLoadingSpin();
+
+// set number mode
+$('#modepanel .mode-num').addClass('btn-primary');
+
+// hide our toolbar if necessary
+var toolbar = (typeof toolbar == 'undefined') ? true : toolbar;
+if (!toolbar) { $('#toolbar').css('display', 'none'); }
+
+// initial load screen
+refreshEnabled = true;
+refreshData(true);
+
+// define our refresh and start interval
+var refreshInterval = (typeof refresh == 'undefined') ? 10000 : refresh;
+var refreshId = setInterval(refreshData, refreshInterval);
+
+// set our 'live' interval hint
+$('#timepanel .play').text(period + 'min');
 }); // END $()

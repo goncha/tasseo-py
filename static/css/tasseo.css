@@ -24,6 +24,10 @@ body {
   border-right: 1px dotted #ddd;
 }
 
+body.night {
+  background-color: #000;
+}
+
 .night .graph svg {
   border-left: 1px dotted #333;
   border-right: 1px dotted #333;
@@ -77,6 +81,15 @@ span.description:hover {
   z-index: 200;
 }
 
+.overlay-spin {
+  dispaly: none;
+  position: absolute;
+  right: 146px;
+  bottom: 26px;
+  z-index: 400;
+}
+
+
 .overlay-name.night, .overlay-number.night {
   color: #fff;
   opacity: 1.0;
@@ -92,12 +105,4 @@ span.description:hover {
 
 span.unit {
   font-size: 24px;
-}
-
-div.x_label {
-  font-size: 13px;
-}
-
-div.item {
-  font-size: 12px;
 }
