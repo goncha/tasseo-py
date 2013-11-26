@@ -254,6 +254,7 @@ $('#modepanel').on('click', 'button.mode-num', function() {
 
 // time panel, pause live feed and show range
 $('#timepanel').on('click', 'button.range', function() {
+  if ($(this).hasClass('btn-primary')) { return; }
   var rangePeriod = $(this).attr('title');
   constructUrl(rangePeriod);
   if (! $('#timepanel button.play').hasClass('pause')) {
@@ -269,6 +270,7 @@ $('#timepanel').on('click', 'button.range', function() {
 
 // time panel, resume live feed
 $('#timepanel').on('click', 'button.play', function() {
+  if ($(this).hasClass('btn-primary')) { return; }
   constructUrl(myPeriod);
   $(this).parent('div').find('button').removeClass('btn-primary');
   $(this).addClass('btn-primary');
