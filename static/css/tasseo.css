@@ -92,11 +92,10 @@ span.description:hover {
 
 .overlay-name.night, .overlay-number.night {
   color: #fff;
-  opacity: 1.0;
 }
 
 .overlay-number.nonum {
-  opacity: 0.0;
+  display: none;
 }
 
 .overlay-number span.error {
