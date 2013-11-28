@@ -297,10 +297,6 @@ constructLoadingSpin();
 // set number mode
 $('#modepanel .mode-num').addClass('btn-primary');
 
-// hide our toolbar if necessary
-var toolbar = (typeof toolbar == 'undefined') ? true : toolbar;
-if (!toolbar) { $('#toolbar').css('display', 'none'); }
-
 // initial load screen
 refreshEnabled = true;
 refreshData(true);
